@@ -48,6 +48,7 @@ Queries for a the value of a specific key inside a given section
 
 - Real error handling in lemux\_ini\_load, it currently just informs you that there is an error 
   not what is wrong, neither where it happened
+
 ##License
 This project is open-source, for more information see the LICENSE
 file
