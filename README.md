@@ -45,21 +45,26 @@ Loads an INI config from a file
 the INI config on success, NULL if something went wrong
 
 #### void mini\_free(struct INI\_Section \*list)
-Frees the INI\_Section list
+Frees the MINI\_Section list
 
 **Arguments**
-- struct INI\_Section \*list | the list which is to be freed
+- struct MINI\_Section \*list | the list which is to be freed
 
 #### char mini\_query(struct INI\_Section \*list, char \*section, char \*key)
 Queries for the value of a specific key inside a given section
 
 **Arguments**
-- struct INI\_Section \*list | the list which is scanned
+- struct MINI\_Section \*list | the list which is scanned
 - char \*section | the section in which the key-value pair is located
 - char \*key | the key that is searched for
 **Returns**
 The value on success, NULL if section and/or key is not found
 
+####void MINI\_Section \*mini\_print(struct MINI\_Section \*list)
+Prints the INI file to stdout
+
+**Arguments**
+- struct MINI\_Section \*list | the INI config to be printed
 ##Changelog
 - 0.2 | added mini\_load\_file()
 - 0.1 | inital release
