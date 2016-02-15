@@ -17,13 +17,14 @@ struct MINI_KeyValue
     char *value;
     struct MINI_KeyValue *next;
 };
+
+struct MINI_Section *mini_load(char * text);
+struct MINI_Section *mini_load_file(char *file);
+
 void mini_print(struct MINI_Section *list);
-int mini_load(struct MINI_Section **list, char * text);
+
 void mini_free(struct MINI_Section *list);
+
 char *mini_query(struct MINI_Section *list, char *section, char *key);
 
-char *skip_wspace(char *text, char *end_ptr);
-char *get_name(char **text, char *end_ptr);
-char *handle_comment(char *text, char *end_ptr);
-char *get_value(char **text, char *end_ptr);
 #endif

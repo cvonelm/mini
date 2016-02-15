@@ -5,6 +5,11 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+char *skip_wspace(char *text);
+char *get_name(char **text);
+char *handle_comment(char *text);
+char *get_value(char **text);
+
 void mini_print(struct MINI_Section *list)
 {
     for(;list != NULL; list = list->next)
@@ -17,39 +22,72 @@ void mini_print(struct MINI_Section *list)
         }
     }
 }
-int mini_load(struct MINI_Section **list, char *text)
+
+struct MINI_Section *mini_load_file(char *file)
 {
-    char *end_ptr = text + strlen(text);
+    size_t size;
+    FILE *f = fopen(file, "rb");
+    if(f == NULL)
+    {
+        return NULL;
+    }
+    fseek(f, 0, SEEK_END);
+    size = ftell(f);
+    fseek(f, 0, SEEK_SET);
+    char *str;
+    str = malloc(size);
+    if(str == NULL)
+    {
+        return NULL;
+    }
+    fread(str, size, 1, f);
+    if(ferror(f))
+    {
+        free(str);
+        fclose(f);
+        return NULL;
+    }
+    struct MINI_Section *ini = mini_load(str);
+    free(str);
+    fclose(f);
+    return ini;
+
+}
+struct MINI_Section *mini_load(char *text)
+{
     char *it = text;
-    struct MINI_Section *section_it;
+    
+    struct MINI_Section *section_it = NULL;
+    struct MINI_Section *section_start = NULL;
     struct MINI_KeyValue *value_it = NULL;
-    while(it < end_ptr)
+    
+    while(*it != 0)
     {
         if(*it == '#')
         {
-            it = handle_comment(it, end_ptr);
-            if(it == NULL)
+            it = handle_comment(it);
+            if(*it == 0)
             {
-                return 0;
+                return section_start;
             }
         }
         else if(*it == '[')
         {
             it++;
-            it = skip_wspace(it, end_ptr);
-            if(it == NULL)
+            it = skip_wspace(it);
+            if(*it == 0)
             {
-                return -1;
+                return NULL;
             }
 
-            if(*list == NULL)
+            if(section_start == NULL)
             {
-                *list = calloc(1, sizeof(struct MINI_Section));
-                if(*list == NULL)
+                section_start = calloc(1, sizeof(struct MINI_Section));
+                if(section_start == NULL)
                 {
-                    return -1;
+                    return NULL;
                 }
-                section_it = *list;
+                section_it = section_start;
                 section_it->next = NULL;
             }
             else
@@ -57,41 +95,41 @@ int mini_load(struct MINI_Section **list, char *text)
                 section_it->next = calloc(1, sizeof(struct MINI_Section));
                 if(section_it->next == NULL)
                 {
-                    return -1;
+                    return NULL;
                 }
                 section_it = section_it->next;
                 section_it->next = NULL;
             }
             section_it->values = NULL;
-            section_it->name = get_name(&it, end_ptr);
-            if(section_it->name == NULL)
+            section_it->name = get_name(&it);
+            if(*section_it->name == 0)
             {
-                return -1;
+                return NULL;
             }
-            it = skip_wspace(it, end_ptr);
-            if(it == NULL)
+            it = skip_wspace(it);
+            if(*it == 0)
             {
-                return -1;
+                return NULL;
             }
             if(*it != ']')
             {
-                return -1;
+                return NULL;
             }
             it++;
 
             while(1)
             {
-                it = skip_wspace(it, end_ptr);
-                if(it == NULL)
+                it = skip_wspace(it);
+                if(*it == 0)
                 {
-                    return 0;
+                    return section_start;
                 }
                 else if(*it == '#')
                 {
-                    it = handle_comment(it, end_ptr);
-                    if(it == NULL)
+                    it = handle_comment(it);
+                    if(*it == 0)
                     {
-                        return 0;
+                        return section_start;
                     }
                 }
                 else if(*it == '[')
@@ -105,8 +143,7 @@ int mini_load(struct MINI_Section **list, char *text)
                         section_it->values = calloc(1, sizeof(struct MINI_KeyValue));
                         if(section_it->values == NULL)
                         {
-                            fprintf(stderr, "Bla\n");
-                            return -1;
+                            return NULL;
                         }
                         value_it = section_it->values;
                         value_it->next = NULL;
@@ -116,42 +153,45 @@ int mini_load(struct MINI_Section **list, char *text)
                         value_it->next = calloc(1, sizeof(struct MINI_KeyValue));
                         if(value_it->next == NULL)
                         {
-                            return -1;
+                            return NULL;
                         }
                         value_it = value_it->next;
                         value_it->next = NULL;
                     }
-                    value_it->name = get_name(&it, end_ptr);
-                    if(value_it->name == NULL)
+
+                    value_it->name = get_name(&it);
+                    if(*value_it->name == 0)
                     {
-                        fprintf(stderr, "bla\n");
-                        return -1;
+                        return NULL;
                     }
-                    fprintf(stderr, "(%c)\n", *it);
-                    it = skip_wspace(it, end_ptr);
-                    if(it == NULL)
+
+                    it = skip_wspace(it);
+                    if(*it == 0)
                     {
-                        return -1;
+                        return NULL;
                     }
                     if(*it != '=')
                     {
-                        return -1;
+                        return NULL;
                     }
+
                     /* first letter after = */
                     it++;
-                    if(it >= end_ptr)
+                    if(*it == 0)
                     {
-                        return -1;
+                        return NULL;
                     }
-                    it = skip_wspace(it, end_ptr);
-                    if(it == NULL)
+
+                    it = skip_wspace(it);
+                    if(*it == 0)
                     {
-                        return -1;
+                        return NULL;
                     }
-                    value_it->value = get_value(&it, end_ptr);
-                    if(value_it->value == NULL)
+
+                    value_it->value = get_value(&it);
+                    if(*value_it->value == 0)
                     {
-                        return -1;
+                        return NULL;
                     }
                 }
             }
@@ -221,10 +261,10 @@ void mini_free(struct MINI_Section *list)
         list = next;
     }
 }
-char *get_value(char  **text, char *end_ptr)
+char *get_value(char  **text)
 {
     char *name_end_ptr = *text;
-    for(;*name_end_ptr != '\n' &&  name_end_ptr < end_ptr;name_end_ptr++);
+    for(;*name_end_ptr != '\n' &&  *name_end_ptr != 0;name_end_ptr++);
     char * result  = calloc(name_end_ptr - *text + 1, sizeof(char));
     if(result == NULL)
     {
@@ -234,42 +274,36 @@ char *get_value(char  **text, char *end_ptr)
     *text = name_end_ptr;
     return result;
 }
-char *handle_comment(char *text, char *end_ptr)
+char *handle_comment(char *text)
 {
-    for(;*text != '\n' && text < end_ptr;text++);
-    text++;
-    if(text == end_ptr)
+    for(;*text != '\n' && *text != 0;text++);
+    if(*text == '\n')
     {
-        return NULL;
+        text++;
     }
     return text;
 }
-char *get_name(char **text, char *end_ptr)
+char *get_name(char **text)
 {
     char *name_end_ptr = *text;
 
-    for(;(isalnum(*name_end_ptr) || *name_end_ptr == '_')&& name_end_ptr != end_ptr;name_end_ptr++);
+    for(;(isalnum(*name_end_ptr) || *name_end_ptr == '_')
+            && *name_end_ptr != 0 ;name_end_ptr++);
     char *result = calloc(name_end_ptr- (*text) + 1, sizeof(char));
     if(result == NULL)
     {
         return NULL;
     }
     result[name_end_ptr - (*text)] = 0;
+
     memcpy(result, *text, name_end_ptr-(*text));
     
     *text = name_end_ptr;
     return result;
 }
 
-char *skip_wspace(char *text, char *end_ptr)
+char *skip_wspace(char *text)
 {
-    for(;isspace(*text) && text < end_ptr;text++);
-    if(text < end_ptr)
-    {
-        return text;
-    }
-    else
-    {
-        return NULL;
-    }
+    for(;isspace(*text) && *text != 0;text++);
+    return text;
 }

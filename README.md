@@ -1,4 +1,7 @@
-#mINI - A **m**inimal **INI** parser
+#mINI 0.2 - A **m**inimal **INI** parser
+##Using the library
+
+test/mini\_test.c contains a minimal example
 
 ##Documentation
 
@@ -23,32 +26,43 @@ A key-value pair.
 
 ###Functions
 
-#### int mini\_load(struct INI\_Section \*\*list, char \*text)
+####struct MINI\_Section \*mini\_load(char \*text)
 
-Loads an INI file
+Loads an INI config from a string
 
-- struct INI\_Section \*\*list | the head of the section-list will be laid into the pointer pointed by this pointer
-- char \*file | the INI File as a NULL-terminated string
-- Returns: 0 on success, -1 if something failed
+**Arguments**
+- char \*text | the INI File as a NULL-terminated string
+
+**Returns**
+the INI config on success, NULL if something went wrong
+####struct MINI\_Section \*mini\_load\_file(char \*file)
+Loads an INI config from a file
+
+**Arguments**
+- char \*text | the filename to be loaded
+
+**Returns**
+the INI config on success, NULL if something went wrong
 
 #### void mini\_free(struct INI\_Section \*list)
 Frees the INI\_Section list
 
+**Arguments**
 - struct INI\_Section \*list | the list which is to be freed
 
 #### char mini\_query(struct INI\_Section \*list, char \*section, char \*key)
-Queries for a the value of a specific key inside a given section
+Queries for the value of a specific key inside a given section
 
+**Arguments**
 - struct INI\_Section \*list | the list which is scanned
 - char \*section | the section in which the key-value pair is located
 - char \*key | the key that is searched for
-- Returns: the value on success, NULL if section and/or key is not found
+**Returns**
+The value on success, NULL if section and/or key is not found
 
-##TODO:
-
-- Real error handling in lemux\_ini\_load, it currently just informs you that there is an error 
-  not what is wrong, neither where it happened
-
+##Changelog
+- 0.2 | added mini\_load\_file()
+- 0.1 | inital release
 ##License
 This project is open-source, for more information see the LICENSE
 file
