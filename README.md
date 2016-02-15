@@ -63,6 +63,7 @@ The value on success, NULL if section and/or key is not found
 ##Changelog
 - 0.2 | added mini\_load\_file()
 - 0.1 | inital release
+
 ##License
 This project is open-source, for more information see the LICENSE
 file
