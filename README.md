@@ -50,7 +50,7 @@ Frees the MINI\_Section list
 **Arguments**
 - struct MINI\_Section \*list | the list which is to be freed
 
-#### char mini\_query(struct INI\_Section \*list, char \*section, char \*key)
+#### char \*mini\_query(struct INI\_Section \*list, char \*section, char \*key)
 Queries for the value of a specific key inside a given section
 
 **Arguments**
