@@ -65,6 +65,7 @@ Prints the INI file to stdout
 
 **Arguments**
 - struct MINI\_Section \*list | the INI config to be printed
+
 ##Changelog
 - 0.2 | added mini\_load\_file()
 - 0.1 | inital release
