@@ -10,15 +10,15 @@ char *get_name(char **text);
 char *handle_comment(char *text);
 char *get_value(char **text);
 
-void mini_print(struct MINI_Section *list)
+void mini_write(FILE* stream, struct MINI_Section *list)
 {
     for(;list != NULL; list = list->next)
     {
-        printf("[%s]\n", list->name);
+        fprintf(stream, "[%s]\n", list->name);
         struct MINI_KeyValue *kv;
         for(kv = list->values;kv != NULL; kv = kv->next)
         {
-            printf("%s=%s\n", kv->name, kv->value);
+            fprintf(stream, "%s=%s\n", kv->name, kv->value);
         }
     }
 }

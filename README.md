@@ -1,4 +1,4 @@
-#mINI 0.2 - A **m**inimal **INI** parser
+#mINI 0.3 - A **m**inimal **INI** parser
 ##Using the library
 
 test/mini\_test.c contains a minimal example
@@ -54,19 +54,20 @@ Frees the MINI\_Section list
 Queries for the value of a specific key inside a given section
 
 **Arguments**
-- struct MINI\_Section \*list | the list which is scanned
+- struct MINI\_Section \*list | the INI config which is scanned
 - char \*section | the section in which the key-value pair is located
 - char \*key | the key that is searched for
 **Returns**
 The value on success, NULL if section and/or key is not found
 
-####void MINI\_Section \*mini\_print(struct MINI\_Section \*list)
-Prints the INI file to stdout
-
+####void MINI\_Section \*mini\_write(FILE \*stream, struct MINI\_Section \*list)
+Writes the INI file to stream
 **Arguments**
-- struct MINI\_Section \*list | the INI config to be printed
+- FILE \*stream | the stream the INI will be written to
+- struct MINI\_Section \*list | the INI to be written
 
 ##Changelog
+- 0.3 | replaced mini\_print() with mini\_write()
 - 0.2 | added mini\_load\_file()
 - 0.1 | inital release
 

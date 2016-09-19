@@ -10,6 +10,8 @@ int main(int argc, char **argv)
     {
         return -1;
     }
-    mini_print(ini);
+    FILE *f = fopen("test.ini", "w");
+    mini_write(f, ini);
+    fclose(f);
     mini_free(ini);
 }

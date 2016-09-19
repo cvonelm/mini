@@ -3,7 +3,7 @@
  */
 #ifndef _MINI_H_
 #define _MINI_H_
-
+#include <stdio.h>
 
 struct MINI_Section
 {
@@ -21,7 +21,7 @@ struct MINI_KeyValue
 struct MINI_Section *mini_load(char * text);
 struct MINI_Section *mini_load_file(char *file);
 
-void mini_print(struct MINI_Section *list);
+void mini_write(FILE *stream, struct MINI_Section *list);
 
 void mini_free(struct MINI_Section *list);
 
