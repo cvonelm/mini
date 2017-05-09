@@ -3,12 +3,12 @@
 
 test/mini\_test.c contains a minimal example
 
-##Documentation
+## Documentation
 
-###Structures
+### Structures
 
 The last next pointer in both structures is set to NULL
-####MINI\_Section
+#### MINI\_Section
 
 A section inside the INI File
 
@@ -16,7 +16,7 @@ A section inside the INI File
 * struct MINI\_Section \*next | the next section inside the INI File
 * struct MINI\_KayValue \*values | a pointer to the first key*value pair of the section
 
-####MINI\_KeyValue
+#### MINI\_KeyValue
 
 A key*value pair.
 
@@ -24,9 +24,9 @@ A key*value pair.
 * char \*value | the value
 * struct MINI\_KeyValue | the next key*value pair
 
-###Functions
+### Functions
 
-####struct MINI\_Section \*mini\_load(char \*text)
+#### struct MINI\_Section \*mini\_load(char \*text)
 
 Loads an INI config from a string
 
@@ -35,7 +35,7 @@ Loads an INI config from a string
 
 **Returns**
 the INI config on success, NULL if something went wrong
-####struct MINI\_Section \*mini\_load\_file(char \*file)
+#### struct MINI\_Section \*mini\_load\_file(char \*file)
 Loads an INI config from a file
 
 **Arguments**
@@ -57,21 +57,24 @@ Queries for the value of a specific key inside a given section
 * struct MINI\_Section \*list | the INI config which is scanned
 * char \*section | the section in which the key*value pair is located
 * char \*key | the key that is searched for
+
 **Returns**
 The value on success, NULL if section and/or key is not found
 
-####void MINI\_Section \*mini\_write(FILE \*stream, struct MINI\_Section \*list)
+#### void MINI\_Section \*mini\_write(FILE \*stream, struct MINI\_Section \*list)
+
 Writes the INI file to stream
+
 **Arguments**
 * FILE \*stream | the stream the INI will be written to
 * struct MINI\_Section \*list | the INI to be written
 
-##Changelog
+## Changelog
 * 0.3 | replaced mini\_print() with mini\_write()
 * 0.2 | added mini\_load\_file()
 * 0.1 | inital release
 
-##License
+## License
 This project is open source, for more information see the LICENSE
 file
 
