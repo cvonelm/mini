@@ -35,7 +35,9 @@ Loads an INI config from a string
 
 **Returns**
 the INI config on success, NULL if something went wrong
+
 #### struct MINI\_Section \*mini\_load\_file(char \*file)
+
 Loads an INI config from a file
 
 **Arguments**
@@ -60,6 +62,11 @@ Queries for the value of a specific key inside a given section
 
 **Returns**
 The value on success, NULL if section and/or key is not found
+
+#### struct MINI\_KeyValue \*mini\_get\_section( struct MINI\_Section \* ini, char \*name)
+
+Returns the pointer to the key-Value Set of the first INI
+Section which name matches [name]
 
 #### void MINI\_Section \*mini\_write(FILE \*stream, struct MINI\_Section \*list)
 

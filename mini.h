@@ -13,7 +13,7 @@ struct MINI_Section
 };
 struct MINI_KeyValue
 {
-    char *name;
+    char *key;
     char *value;
     struct MINI_KeyValue *next;
 };
@@ -24,7 +24,7 @@ struct MINI_Section *mini_load_file(char *file);
 void mini_write(FILE *stream, struct MINI_Section *list);
 
 void mini_free(struct MINI_Section *list);
-
+struct MINI_KeyValue *mini_get_section(struct MINI_Section *ini, char *name);
 char *mini_query(struct MINI_Section *list, char *section, char *key);
 
 #endif

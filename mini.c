@@ -18,11 +18,22 @@ void mini_write(FILE* stream, struct MINI_Section *list)
         struct MINI_KeyValue *kv;
         for(kv = list->values;kv != NULL; kv = kv->next)
         {
-            fprintf(stream, "%s=%s\n", kv->name, kv->value);
+            fprintf(stream, "%s=%s\n", kv->key, kv->value);
         }
     }
 }
-
+struct MINI_KeyValue *mini_get_section(struct MINI_Section *ini, char *name)
+{
+    struct MINI_Section *it = ini;
+    for(;it != NULL;it = it->next)
+    {
+        if(strcmp(it->name, name) == 0)
+        {
+            return it->values;
+        }
+    }
+    
+}
 struct MINI_Section *mini_load_file(char *file)
 {
     size_t size;
@@ -35,7 +46,7 @@ struct MINI_Section *mini_load_file(char *file)
     size = ftell(f);
     fseek(f, 0, SEEK_SET);
     char *str;
-    str = malloc(size);
+    str = calloc(1, size + 1);
     if(str == NULL)
     {
         return NULL;
@@ -159,8 +170,8 @@ struct MINI_Section *mini_load(char *text)
                         value_it->next = NULL;
                     }
 
-                    value_it->name = get_name(&it);
-                    if(*value_it->name == 0)
+                    value_it->key = get_name(&it);
+                    if(*value_it->key == 0)
                     {
                         return NULL;
                     }
@@ -217,7 +228,7 @@ char *mini_query(struct MINI_Section *list, char *section, char *key)
     
     struct MINI_KeyValue *kv_it;
     
-    for(kv_it = it->values;kv_it != NULL && strcmp(kv_it->name, key) != 0;kv_it = kv_it->next);
+    for(kv_it = it->values;kv_it != NULL && strcmp(kv_it->key, key) != 0;kv_it = kv_it->next);
     
     if(kv_it == NULL)
     {
@@ -246,9 +257,9 @@ void mini_free(struct MINI_Section *list)
         while(kv != NULL)
         {
             struct MINI_KeyValue *kv_next = kv->next;
-            if(kv->name != NULL)
+            if(kv->key != NULL)
             {
-                free(kv->name);
+                free(kv->key);
             }
             if(kv->value != NULL)
             {
@@ -304,6 +315,6 @@ char *get_name(char **text)
 
 char *skip_wspace(char *text)
 {
-    for(;isspace(*text) && *text != 0;text++);
+    for(;isspace(*text) && *text != 0;++text);
     return text;
 }
